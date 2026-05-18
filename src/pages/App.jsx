@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route } from "react-router-dom";
 import '../styles/App.scss'
+import CharacterList from '../components/CharacterList';
+
 
 function App () {
-const ImgVar = `https://www.justcolor.net/ninos/wp-content/uploads/sites/25/nggallery/harry-potter/dibujos-para-colorear-para-ninos-harry-potter-81640.jpg.webp`;
+
 const [characters, setCharacters] = useState ([]);
 const [house, setHouse] = useState ("");
+const houses = characters.map((characterObj) => characterObj.house);
+//Con el set se eliminan los duplicados
+const uniqueHouses = [...new Set(houses)];
+const [name, setName] = useState ("");
+
+
 
 useEffect (() => {
   fetch("https://hp-api.onrender.com/api/characters")
@@ -18,18 +26,23 @@ useEffect (() => {
           name: characterObj.name,
           specie: characterObj.species,
           id: characterObj.id,
+          house: characterObj.house,
         };
       }),
     );
   });
-}, [house]);
+}, [uniqueHouses]);
 
 //SECCIÓN FUNCIONES DE EVENTOS
+
+const handleInputName = (ev) => {
+  setName(ev.target.value);
+};
 
 const handleInputHouses = (ev) => {
   setHouse(ev.target.value);
 
-  fetch("https://hp-api.onrender.com/api/characters" + house)
+  fetch("https://hp-api.onrender.com/api/characters/house/" + ev.target.value)
   .then(res => res.json())
   .then (data => {
     setCharacters (data.map ((characterObj) => {
@@ -38,12 +51,16 @@ const handleInputHouses = (ev) => {
         name: characterObj.name,
         specie: characterObj.species,
         id: characterObj.id,
+        house: characterObj.house,
       };
     })); 
   });
 }
 
-
+const filteredCharacters =
+characters.filter((characterObj) => {
+  return characterObj.name.toLocaleLowerCase().includes(name.toLocaleLowerCase());
+});
 
 return (
   <div>
@@ -55,42 +72,37 @@ return (
         <h2 className="form_title">Filtrar por...</h2>
         <label className="form_label" htmlFor="search_characters">
           Nombre:
-        <input className="search_carachter" type="text" id="search_carachter"></input>
+        <input
+        className="search_carachter"
+        type="text"
+        id="search_carachter"
+        value={name}
+        onInput={handleInputName}
+        />
         </label>
         <label className="form_label" htmlFor="search_houses">
           Casa:
           <select
+          key="search_house"
           className="search_house"
           id="search_house"
           onInput={handleInputHouses}
           value={house}
           >
-            <option value="Todas">Todas</option>
-            <option value="Gryffindor">Gryffindor</option>
-            <option value="Slytherin">Slytherin</option>
-            <option value="Hufflepuff">Hufflepuff</option>
-            <option value="Ravenclaw">Ravenclaw</option>
+            <option key="Todas" value="Todas">
+              Todas
+            </option>
+            {uniqueHouses.map((eachHouse) => (
+              <option key={eachHouse} value={eachHouse}>
+                {eachHouse}
+              </option>
+            ))}
           </select>
         </label>
       </form>
       <section className="characters_section">
       <h2 className="list_title">Lista de personajes</h2>
-      <ul className="cards">
-        {characters.map((characterObj) => (
-          <li key={characterObj.id} className="card">
-          <img
-            className="card_img"
-            src={characterObj.image || ImgVar}
-            alt={"Foto de " + characterObj.name}
-            title={"Foto de " + characterObj.name}
-          />
-          <div className="card_text">
-          <h4 className="card-name">{characterObj.name}</h4>
-          <p className="card-specie">{characterObj.specie}</p>
-          </div>
-        </li>
-        ))};
-      </ul>
+      <CharacterList characters={filteredCharacters} />
       </section>
     </main>
   </div>
