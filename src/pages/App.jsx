@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Routes, Route } from "react-router-dom";
 import '../styles/App.scss'
 import CharacterList from '../components/CharacterList';
+import Filters from '../components/Filters';
 
 
 function App () {
@@ -12,6 +13,7 @@ const houses = characters.map((characterObj) => characterObj.house);
 //Con el set se eliminan los duplicados
 const uniqueHouses = [...new Set(houses)];
 const [name, setName] = useState ("");
+const [selectedHouse, setSelectedHouse] = useState("Todas");
 
 
 
@@ -31,7 +33,7 @@ useEffect (() => {
       }),
     );
   });
-}, [uniqueHouses]);
+}, []);
 
 //SECCIÓN FUNCIONES DE EVENTOS
 
@@ -58,9 +60,13 @@ const handleInputHouses = (ev) => {
 }
 
 const filteredCharacters =
-characters.filter((characterObj) => {
-  return characterObj.name.toLocaleLowerCase().includes(name.toLocaleLowerCase());
-});
+  characters.filter((characterObj) => {
+    const matchesName = characterObj.name.toLocaleLowerCase().includes(name.toLocaleLowerCase());
+    const matchesHouse = house === "Todas" || house === "" ? true : characterObj.house === house;
+    return matchesName || matchesHouse;
+  });
+
+
 
 return (
   <div>
@@ -77,7 +83,7 @@ return (
         type="text"
         id="search_carachter"
         value={name}
-        onInput={handleInputName}
+        onChange={handleInputName}
         />
         </label>
         <label className="form_label" htmlFor="search_houses">
@@ -86,7 +92,7 @@ return (
           key="search_house"
           className="search_house"
           id="search_house"
-          onInput={handleInputHouses}
+          onChange={handleInputHouses}
           value={house}
           >
             <option key="Todas" value="Todas">
