@@ -45,3 +45,16 @@ a {
   text-decoration: none;
   color: black;
 }
+
+.detailPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+dl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
