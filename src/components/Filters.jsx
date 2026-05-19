@@ -1,10 +1,11 @@
 export default function Filters (
-    handleInputName,
+    {handleInputName,
     name,
     handleInputHouses,
     house,
-    uniqueHouses) {
-    return (<form className="filter">
+    uniqueHouses}) {
+    return (
+      <form className="filter">
         <h2 className="form_title">Filtrar por...</h2>
         <label className="form_label" htmlFor="search_characters">
           Nombre:
@@ -35,5 +36,6 @@ export default function Filters (
             ))}
           </select>
         </label>
-      </form>)
+      </form>
+    )
 }

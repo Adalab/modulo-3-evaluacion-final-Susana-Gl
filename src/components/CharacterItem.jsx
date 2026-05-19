@@ -1,6 +1,8 @@
+import { Link } from "react-router";
+
 export default function CharacterItem ({ characterObj }) {
     return (
-        <>
+        <Link to={"/detail/" + characterObj.id}>
             <img
              className="card_img"
              src={characterObj.image || "https://www.justcolor.net/ninos/wp-content/uploads/sites/25/nggallery/harry-potter/dibujos-para-colorear-para-ninos-harry-potter-81640.jpg.webp"}
@@ -11,6 +13,6 @@ export default function CharacterItem ({ characterObj }) {
           <h4 className="card-name">{characterObj.name}</h4>
           <p className="card-specie">{characterObj.specie}</p>
           </div>
-        </>
+        </Link>
     );
 };
