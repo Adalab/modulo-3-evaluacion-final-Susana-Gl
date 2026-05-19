@@ -138,6 +138,8 @@ import { Routes, Route } from "react-router";
 import '../styles/App.scss'
 import CharacterList from '../components/CharacterList';
 import Filters from '../components/Filters';
+import Landing from './Landing';
+import Detail from './Detail';
 //import Filters from '../components/Filters';
 
 
@@ -167,6 +169,8 @@ useEffect (() => {
           specie: characterObj.species,
           id: characterObj.id,
           house: characterObj.house,
+          alive: characterObj.alive,
+          gender: characterObj.gender,
         };
       }),
     );
@@ -194,6 +198,9 @@ const filteredCharacters =
 
 //Sección funciones o variables helper
 
+function getCharacterById (searchID) {
+    return characters.find(characterObj => characterObj.id === searchID) // Devuelve el personaje con el id que le pasamos por parámetro
+}
 
 return (
   <div>
@@ -203,26 +210,20 @@ return (
     <main className="main">
 
       <Routes>
-        <Route path="/"
+        <Route index
         element={
-          <>
-          <Filters
-            handleInputName={handleInputName}
-            name={name}
-            handleInputHouses={handleInputHouses}
-            house={house}
-            uniqueHouses={uniqueHouses}
-          />
-      <section className="characters_section">
-      <h2 className="list_title">Lista de personajes</h2>
-      <CharacterList characters={filteredCharacters} />
-      </section>
-      </>
-      }
+<Landing 
+  handleInputName={handleInputName}
+    name={name}
+    handleInputHouses={handleInputHouses}
+    house={house}
+    uniqueHouses={uniqueHouses}
+    filteredCharacters={filteredCharacters}>
+      </Landing>}
       ></Route>
 
         <Route path="/detail/:id"
-        element={<section>Detalles del personaje</section>}>
+        element={<Detail getCharacterById={getCharacterById} />}>
         </Route>
       </Routes>
 
